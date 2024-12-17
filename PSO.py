@@ -74,42 +74,21 @@ class PSO:
                 "position": np.copy(self.global_best_position),
                 "value": self.global_best_value
             }
-
             # Simpan log iterasi
             self.iteration_logs.append(iteration_log)
+
         return self.global_best_position, self.global_best_value
-
-# def plot_pso_logs(iteration_logs):
-#     fig, axs = plt.subplots(2, 2, figsize=(12, 10))
-#     fig.suptitle('Particle Swarm Optimization Progress', fontsize=16)
-#     for i, ax in enumerate(axs.flatten()):
-#         log = iteration_logs[i]
-#         positions = np.array(log["positions"])
-#         gBest = np.array(log["gBest"]["position"])
-#         ax.scatter(positions[:, 0], positions[:, 1], color='dodgerblue', label=f'Particles - Iteration {i+1}')
-#         ax.scatter(gBest[0], gBest[1], color='red', marker='x', s=100, label='Global Best')
-#         ax.set_xlim(-10, 10)
-#         ax.set_ylim(-10, 10)
-#         ax.set_xlabel('X')
-#         ax.set_ylabel('Y')
-#         ax.legend()
-#         ax.set_title(f'Iteration {i+1}' if i < len(iteration_logs) - 1 else 'Final Result')
-#     plt.tight_layout()
-#     plt.subplots_adjust(top=0.9)
-#     plt.show()
-
+    
 # Fungsi untuk membuat direktori dan menyimpan gambar
 def plot_pso_logs(iteration_logs, output_dir="pngs"):
     if os.path.exists(output_dir):
-        shutil.rmtree(output_dir)  # Bersihkan folder jika sudah ada
-    os.makedirs(output_dir)  # Buat folder baru
+        shutil.rmtree(output_dir)
+    os.makedirs(output_dir)
     num_digits = len(str(max_iter))  # Menghitung jumlah digit maksimum
 
     for i, log in enumerate(iteration_logs):
         positions = np.array(log["positions"])  # Ambil posisi partikel
         gBest = np.array(log["gBest"]["position"])  # Ambil global best
-
-
         plt.figure(figsize=(8, 6))
         plt.scatter(positions[:, 0], positions[:, 1], color='dodgerblue', label=f'Particles - Iteration {i+1}')
         plt.scatter(gBest[0], gBest[1], color='red', marker='x', s=100, label='Global Best')
@@ -138,14 +117,16 @@ if __name__ == "__main__":
     dim = 2
     batas = [-10, 10]
     max_iter = 100
-
     pso = PSO(objective_function, dim, batas, num_particles=10, max_iter=max_iter, c1=1, c2=0.5)
     best_position, best_value = pso.optimize()
 
     # Menyimpan visualisasi setiap iterasi
     plot_pso_logs(pso.iteration_logs, "pngs")
-    
-        # Menampilkan hasil log untuk setiap iterasi
+
+    # Membuat GIF dari gambar yang disimpan
+    create_gif_from_images("pngs")
+
+    # Menampilkan hasil log untuk setiap iterasi
     for i, log in enumerate(pso.iteration_logs):
         print(f"\n--- Iterasi {i + 1} ---")
         print(f"gBest: Position = {log['gBest']['position']}, Value = {log['gBest']['value']}\n")
@@ -155,56 +136,5 @@ if __name__ == "__main__":
         for j, (pos, vel, pbest) in enumerate(zip(log["positions"], log["velocities"], log["PBest"])):
             print(f"{j + 1:<10}{str(pos):<25}{str(vel):<25}{str(pbest):<25}")
 
-    # Membuat GIF dari gambar yang disimpan
-    create_gif_from_images("pngs")
-
     print("Best Position (x, y):", best_position)
     print("Best Value:", best_value)
-
-
-
-
-
-# if __name__ == "__main__":
-#     dim = 2
-#     batas = [-10, 10]
-#     pso = PSO(objective_function, dim, batas, num_particles=10, max_iter=100, c1=1, c2=0.5)
-#     best_position, best_value = pso.optimize()
-
-#     # Menampilkan hasil log
-#     for i, log in enumerate(pso.iteration_logs):
-#         print(f"\n--- Iterasi {i + 1} ---")
-#         print(f"gBest: Position = {log['gBest']['position']}, Value = {log['gBest']['value']}\n")
-#         print(f"{'Particle':<10}{'Position (x, y)':<25}{'Velocity (v_x, v_y)':<25}{'PBest (x, y)':<25}")
-#         print("-" * 80)
-#         for j, (pos, vel, pbest) in enumerate(zip(log["positions"], log["velocities"], log["PBest"])):
-#             print(f"{j + 1:<10}{str(pos):<25}{str(vel):<25}{str(pbest):<25}")
-
-#     print("Best Position (x, y):", best_position)
-#     print("Best Value:", best_value)
-
-#     # Plot hasil iterasi
-#     plot_pso_logs(pso.iteration_logs)
-# if __name__ == "__main__":
-#     dim = 2  # dimensi ruang pencarian (x, y)
-#     batas = [-10, 10]  # batas pencarian untuk x dan y
-
-#     # inisialisasi pso
-#     pso = PSO(objective_function, dim, batas, num_particles=10, max_iter=3, c1=1, c2=0.5)
-
-#     # optimasi
-#     best_position, best_value = pso.optimize()
-
-    # # Menampilkan hasil log untuk setiap iterasi
-    # for i, log in enumerate(pso.iteration_logs):
-    #     print(f"\n--- Iterasi {i + 1} ---")
-    #     print(f"gBest: Position = {log['gBest']['position']}, Value = {log['gBest']['value']}\n")
-    
-    #     print(f"{'Particle':<10}{'Position (x, y)':<25}{'Velocity (v_x, v_y)':<25}{'PBest (x, y)':<25}")
-    #     print("-" * 80)
-    #     for j, (pos, vel, pbest) in enumerate(zip(log["positions"], log["velocities"], log["PBest"])):
-    #         print(f"{j + 1:<10}{str(pos):<25}{str(vel):<25}{str(pbest):<25}")
-
-#     print("Best Position (x, y):", best_position)
-#     print("Best Value:", best_value)
-
